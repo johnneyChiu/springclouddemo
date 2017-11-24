@@ -1,0 +1,17 @@
+server:
+  port: 8088
+hbase:
+  zkQuorum: 172.16.4.4,172.16.4.5,172.16.4.6
+  zkPort: 2181
+  rootDir: hdfs://cstdevcluster/hbase
+  zkDataDir:
+hadoop:
+  hadoopHomeDir: D:\hadoop\hadoop-2.6.5
+  hadoopCoreFile:
+    - core-site.xml
+    - mapred-site.xml
+    - yarn-site.xml
+    - hdfs-site.xml
+  crossPlatform: true
+  ubertask: true
+

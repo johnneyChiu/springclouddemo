@@ -1,0 +1,18 @@
+banner:
+  charset: UTF-8
+server:
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  messages:
+    encoding: UTF-8
+  profiles:
+    active: dev
+  application:
+      name: demo-for-hbase
+
