@@ -8,7 +8,7 @@
    spring boot hadoop hbase介绍
    hbase shell:create 'user','info'
    找到hadoop.dll winutils.exe
-	<h6>你懂得</h6>(https://github.com/johnneyChiu/jstorm-projects/tree/master/firststorm)
+	<h6>你懂得</h6>(https://github.com/johnneyChiu/springclouddemo/tree/master/spring-boot-hadoop-hbase)
 	 
 	 
 </div>
