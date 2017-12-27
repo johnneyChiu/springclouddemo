@@ -1,6 +1,6 @@
-package com.cst.bigdata.repository;
+package com.cst.bigdata.repository.hbase;
 
-import com.cst.bigdata.domain.UserInfo;
+import com.cst.bigdata.domain.hbase.UserInfo;
 
 import java.util.List;
 

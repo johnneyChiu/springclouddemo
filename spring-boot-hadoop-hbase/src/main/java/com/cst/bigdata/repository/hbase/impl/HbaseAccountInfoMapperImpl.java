@@ -1,7 +1,7 @@
-package com.cst.bigdata.repository.impl;
+package com.cst.bigdata.repository.hbase.impl;
 
-import com.cst.bigdata.domain.UserInfo;
-import com.cst.bigdata.repository.HbaseAccountInfoMapper;
+import com.cst.bigdata.domain.hbase.UserInfo;
+import com.cst.bigdata.repository.hbase.HbaseAccountInfoMapper;
 import com.cst.bigdata.utils.HbaseFindBuilder;
 import com.cst.bigdata.utils.HbasePutBuilder;
 import org.apache.hadoop.hbase.client.Result;
@@ -35,8 +35,6 @@ public class HbaseAccountInfoMapperImpl implements HbaseAccountInfoMapper {
     public void putEntity(String tableName,String family,String rowKey, UserInfo userInfo) {
         hbaseTemplate.execute(tableName, (table) -> {
             HbasePutBuilder<UserInfo> hbasePutBuilder = new HbasePutBuilder(family,rowKey.getBytes(),userInfo);
-           /* hbasePutBuilder.build("id", userInfo.getId()).build("age", userInfo.getAge())
-            .build("userName",userInfo.getUserName());*/
             table.put(hbasePutBuilder);
             return true;
         });
@@ -45,25 +43,15 @@ public class HbaseAccountInfoMapperImpl implements HbaseAccountInfoMapper {
     @Override
     public List<UserInfo> findAll(String tablename, String family) {
         byte[] cf_info = family.getBytes();
-
         byte[] age_info = Bytes.toBytes("age");
         byte[] id_info = Bytes.toBytes("id");
         byte[] username_info = Bytes.toBytes("userName");
-
-        return hbaseTemplate.find(tablename, family, new RowMapper<UserInfo>() {
-            @Override
-            public UserInfo mapRow(Result result, int rowNum) throws Exception {
-
+        return hbaseTemplate.find(tablename, family,(result, rowNum) -> {
                 UserInfo  u = new UserInfo();
-
                 u.setId(Bytes.toString(result.getValue(cf_info,id_info)));
                 u.setUserName(Bytes.toString(result.getValue(cf_info,username_info)));
                 u.setAge(Bytes.toInt(result.getValue(cf_info,age_info)));
-
                 return u;
-            }
         });
-
-
     }
 }

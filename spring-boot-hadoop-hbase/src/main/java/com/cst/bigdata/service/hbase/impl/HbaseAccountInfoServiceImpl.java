@@ -1,8 +1,8 @@
-package com.cst.bigdata.service.impl;
+package com.cst.bigdata.service.hbase.impl;
 
-import com.cst.bigdata.domain.UserInfo;
-import com.cst.bigdata.repository.HbaseAccountInfoMapper;
-import com.cst.bigdata.service.HbaseAccountInfoService;
+import com.cst.bigdata.domain.hbase.UserInfo;
+import com.cst.bigdata.repository.hbase.HbaseAccountInfoMapper;
+import com.cst.bigdata.service.hbase.HbaseAccountInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.cst.bigdata.domain;
+package com.cst.bigdata.domain.hbase;
 
 /**
  * @author Johnney.chiu

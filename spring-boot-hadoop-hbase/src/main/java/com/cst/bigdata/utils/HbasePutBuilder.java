@@ -106,7 +106,6 @@ public class HbasePutBuilder<T> extends Put{
         super(putToCopy);
     }
 
-
     public HbasePutBuilder(String colFamilyName,byte[] row,T t) throws IllegalAccessException, IntrospectionException, InvocationTargetException {
         super(row);
         this.colFamilyName = colFamilyName;
@@ -134,8 +133,6 @@ public class HbasePutBuilder<T> extends Put{
                 Bytes.toBytes(param.toString()));
         return this;
     }
-
-
 
 }
 

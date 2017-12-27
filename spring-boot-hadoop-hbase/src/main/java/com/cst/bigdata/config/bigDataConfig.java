@@ -30,15 +30,16 @@ public class bigDataConfig {
     private static final String UBERTASK = "mapreduce.job.ubertask.enable";
 
 
+
     @Autowired
     private HbaseProperties hbaseProperties;
+
 
     @Autowired
     HadoopProperties hadoopProperties;
 
-    @Bean
-    @ConditionalOnMissingBean(HbaseTemplate.class)
-    public HbaseTemplate hbaseTemplate() {
+    @Bean(name="haddopConfiguration")
+    public org.apache.hadoop.conf.Configuration createConfiguration(){
         org.apache.hadoop.conf.Configuration configuration = HBaseConfiguration.create();
         System.setProperty(HADOOP_HOME_DIR, hadoopProperties.getHadoopHomeDir());
         hadoopProperties.getHadoopCoreFile().forEach(item -> configuration.addResource(item));
@@ -46,12 +47,21 @@ public class bigDataConfig {
         configuration.set(UBERTASK, hadoopProperties.getUbertask());
         //configuration.setUser("user1");
         //configuration.set("mapreduce.job.jar", "E:\\github\\hadoop\\target\\fulei-1.0-SNAPSHOT.jar");
-       // configuration.set("HADOOP_USER_NAME","user1");
-        configuration.set(HBASE_QUORUM, hbaseProperties.getZkQuorum());
-        configuration.set(HBASE_ROOTDIR, hbaseProperties.getRootDir());
-        configuration.set(HBASE_ZNODE_DATA, hbaseProperties.getZkDataDir());
-        configuration.set(HBASE_ZOOKEEPER_CLIENTPORT,hbaseProperties.getZkPort());
-        return new HbaseTemplate(configuration);
+        // configuration.set("HADOOP_USER_NAME","user1");
+        return configuration;
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean(HbaseTemplate.class)
+    public HbaseTemplate hbaseTemplate(org.apache.hadoop.conf.Configuration haddopConfiguration) {
+        haddopConfiguration.set(HBASE_QUORUM, hbaseProperties.getZkQuorum());
+        haddopConfiguration.set(HBASE_ROOTDIR, hbaseProperties.getRootDir());
+        haddopConfiguration.set(HBASE_ZNODE_DATA, hbaseProperties.getZkDataDir());
+        haddopConfiguration.set(HBASE_ZOOKEEPER_CLIENTPORT,hbaseProperties.getZkPort());
+        HbaseTemplate hbaseTemplate = new HbaseTemplate(haddopConfiguration);
+
+        return hbaseTemplate;
     }
 
 }

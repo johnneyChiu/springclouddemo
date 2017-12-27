@@ -8,8 +8,10 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Johnney.chiu
@@ -28,14 +30,8 @@ public abstract class EntityUtils<T,KEY extends Serializable>{
         if (map == null) {
             return null;
         }
-
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (entry.getValue() == null || entry.equals("")) {
-                map.remove(entry.getKey());
-            }
-        }
-
-        return map;
+        return map.entrySet().stream().filter(e -> e.getValue() != null && !e.getValue().equals(""))
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
     }
 
     /**
@@ -48,19 +44,10 @@ public abstract class EntityUtils<T,KEY extends Serializable>{
             return null;
         }
 
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
+        return map.entrySet().stream().filter(e -> e.getKey() != null && !"".equals(e.getKey()))
+                .filter(e -> e.getValue() != null && !"".equals(e.getValue()))
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
-            if (entry.getKey() == null || entry.getKey().equals("")) {
-                map.remove(entry.getKey());
-                continue;
-            }
-
-            if (entry.getValue() == null || entry.equals("")) {
-                map.remove(entry.getKey());
-            }
-        }
-
-        return map;
     }
 
     /**
@@ -78,11 +65,9 @@ public abstract class EntityUtils<T,KEY extends Serializable>{
         }
 
         Map<String, Map<String, Object>> entity2Map = new HashMap<>();
-
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-
-            entity2Map.put(entry.getKey(), transformEntity(entry.getValue()));
-        }
+        map.entrySet().stream().forEach(e -> {
+                entity2Map.put(e.getKey(), transformEntity(e.getValue()));
+        });
 
         return entity2Map;
     }
@@ -95,19 +80,26 @@ public abstract class EntityUtils<T,KEY extends Serializable>{
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      */
-    public static Map<String,Object> transformEntity(Object obj) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public static Map<String,Object> transformEntity(final Object obj){
         Field[] fields = obj.getClass().getDeclaredFields();
-        Map<String, Object> tMap = new HashMap<>();
+        Map<String, Object> tMap=Arrays.stream(fields).collect(
+                Collectors.toMap(f -> f.getName(), f -> {
+                    f.setAccessible(true);
+                    String name = f.getName().replaceFirst(f.getName().substring(0, 1),f.getName().substring(0, 1).toUpperCase());
+                    try {
+                        Method method = obj.getClass().getMethod("get" + name);
+                        return method.invoke(obj);
 
-        for (Field field : fields) {
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    return "";
 
-            field.setAccessible(true);
-            String name = field.getName().replaceFirst(field.getName().substring(0, 1),field.getName().substring(0, 1).toUpperCase());
-
-            Method method = obj.getClass().getMethod("get" + name);
-            tMap.put(field.getName(), method.invoke(obj));
-
-        }
+                }));
         return tMap;
     }
 }

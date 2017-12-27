@@ -1,7 +1,7 @@
 package com.cst.bigdata.controller;
 
-import com.cst.bigdata.domain.UserInfo;
-import com.cst.bigdata.service.HbaseAccountInfoService;
+import com.cst.bigdata.domain.hbase.UserInfo;
+import com.cst.bigdata.service.hbase.HbaseAccountInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
